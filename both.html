@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Our Memories 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body{
+  margin:0;
+  font-family:Poppins,sans-serif;
+  background:linear-gradient(135deg,#ffe4f2,#fff);
+  text-align:center;
+  overflow-x:hidden;
+}
+
+/* 💖 Floating Hearts */
+.heart{
+  position:fixed;
+  width:15px;
+  height:15px;
+  background:#ff4f9a;
+  transform:rotate(45deg);
+  animation:float 6s linear infinite;
+}
+.heart::before,.heart::after{
+  content:"";
+  position:absolute;
+  width:15px;height:15px;
+  background:#ff4f9a;
+  border-radius:50%;
+}
+.heart::before{top:-7px;}
+.heart::after{left:-7px;}
+
+@keyframes float{
+  0%{transform:translateY(100vh) rotate(45deg);opacity:0}
+  20%{opacity:1}
+  100%{transform:translateY(-10vh) rotate(45deg);opacity:0}
+}
+
+/* Title */
+h1{
+  color:#ff4f9a;
+  margin:20px 0;
+}
+
+/* Gallery */
+.gallery{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:20px;
+  padding:20px;
+}
+
+/* Card */
+.card{
+  background:white;
+  border-radius:15px;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(255,79,154,0.3);
+  cursor:pointer;
+  animation:zoomFade 0.8s ease;
+}
+
+.card img{
+  width:100%;
+  height:250px;
+  object-fit:cover;
+  transition:0.4s;
+}
+
+.card:hover img{
+  transform:scale(1.1);
+}
+
+@keyframes zoomFade{
+  from{opacity:0; transform:scale(0.7) translateY(40px);}
+  to{opacity:1; transform:scale(1) translateY(0);}
+}
+
+/* Popup */
+.popup{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.8);
+  display:none;
+  justify-content:center;
+  align-items:center;
+  z-index:100;
+}
+
+/* ✨ Popup animation */
+.popup img{
+  max-width:90%;
+  max-height:90%;
+  border-radius:20px;
+  animation:superPop 0.6s ease;
+  box-shadow:0 0 40px rgba(255,105,180,0.6);
+}
+
+@keyframes superPop{
+  0%{transform:scale(0.5) rotate(-10deg); opacity:0;}
+  100%{transform:scale(1) rotate(0); opacity:1;}
+}
+
+.close{
+  position:absolute;
+  top:20px;
+  right:25px;
+  font-size:30px;
+  color:white;
+  cursor:pointer;
+}
+
+/* 🌸 Petals */
+.petal{
+  position:fixed;
+  pointer-events:none;
+  font-size:18px;
+  animation:fall linear forwards;
+}
+
+@keyframes fall{
+  0%{transform:translateY(0); opacity:1;}
+  100%{transform:translateY(100vh); opacity:0;}
+}
+
+/* ❤️ Hearts */
+.burst-heart{
+  position:fixed;
+  font-size:20px;
+  pointer-events:none;
+  animation:burst 1s ease forwards;
+}
+
+@keyframes burst{
+  0%{transform:scale(0.5); opacity:1;}
+  100%{transform:translate(var(--x), var(--y)) scale(1.5); opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<h1>💖 Our Cute Memories 💖</h1>
+
+<!-- 💖 GALLERY (👉 YOU ADD YOUR IMAGES HERE) -->
+<div class="gallery">
+  <div class="card"><img src="gallery/alok1.jpeg"></div>
+  <div class="card"><img src="gallery/alok2.jpeg"></div>
+  <div class="card"><img src="gallery/alok3.jpeg"></div>
+</div>
+
+<!-- 💖 POPUP -->
+<div class="popup" id="popup">
+  <span class="close" onclick="closePopup()">×</span>
+  <img id="popupImg">
+</div>
+
+<!-- 🎵 Background Music -->
+<audio id="music" loop preload="auto">
+  <source src="gallery/tumhi.mp3" type="audio/mpeg">
+</audio>
+
+<!-- 🔊 Click Sound -->
+<audio id="clickSound" preload="auto">
+  <source src="gallery/click.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+// 💖 Floating hearts
+for(let i=0;i<20;i++){
+  let h=document.createElement("div");
+  h.className="heart";
+  h.style.left=Math.random()*100+"%";
+  h.style.animationDelay=Math.random()*5+"s";
+  document.body.appendChild(h);
+}
+
+// 🎵 Smooth music
+const music = document.getElementById("music");
+document.addEventListener("click", ()=>{
+  music.volume = 0;
+  music.play().then(()=>{
+    let vol=0;
+    let fade=setInterval(()=>{
+      if(vol<1){
+        vol+=0.05;
+        music.volume=vol;
+      }else clearInterval(fade);
+    },200);
+  }).catch(()=>{});
+},{once:true});
+
+// 🔊 Click Sound
+const clickSound = document.getElementById("clickSound");
+
+// Image Click
+document.querySelectorAll(".card img").forEach(img=>{
+  img.addEventListener("click",(e)=>{
+
+    // play sound
+    clickSound.currentTime = 0;
+    clickSound.play().catch(()=>{});
+
+    // show popup
+    popup.style.display="flex";
+    popupImg.src = img.src;
+
+    // 🌸 petals
+    for(let i=0;i<15;i++){
+      let p=document.createElement("div");
+      p.className="petal";
+      p.innerHTML=Math.random()>0.5?"🌸":"🌹";
+      p.style.left=Math.random()*100+"vw";
+      p.style.animationDuration=(3+Math.random()*2)+"s";
+      document.body.appendChild(p);
+      setTimeout(()=>p.remove(),4000);
+    }
+
+    // ❤️ hearts burst
+    for(let i=0;i<10;i++){
+      let h=document.createElement("div");
+      h.className="burst-heart";
+      h.innerHTML="❤️";
+
+      let x=(Math.random()-0.5)*300+"px";
+      let y=(Math.random()-0.5)*300+"px";
+
+      h.style.setProperty("--x",x);
+      h.style.setProperty("--y",y);
+
+      h.style.left=e.clientX+"px";
+      h.style.top=e.clientY+"px";
+
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(),1000);
+    }
+
+  });
+});
+
+// popup close
+function closePopup(){
+  popup.style.display="none";
+}
+
+popup.addEventListener("click",(e)=>{
+  if(e.target.id==="popup") closePopup();
+});
+
+</script>
+
+</body>
+</html>
